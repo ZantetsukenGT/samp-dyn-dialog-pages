@@ -52,10 +52,10 @@ If you want to clear the ```Items Cache```, you can always use ```DynDialog_Clea
 
 To get the response of the Dialog, create a new callback by either forwarding or by hook
 
-```hook Name_Of_The_Dialog(playerid, additional_data, response, listitem, inputtext[])```
+```hook Name_Of_The_Dialog(playerid, response, additional_data, listitem, inputtext[])```
 * ```playerid``` - The player who responded to the Dialog.
-* ```additional_data``` - The arbitrary value you associated to this item.
 * ```response``` - Did the player clicked Button1 or Button2.
+* ```additional_data``` - The arbitrary value you associated to this item.
 * ```listitem``` - The selected listitem of the dialog.
 * ```inputtext[]``` - The selected listitem's text as a string.
 
@@ -76,7 +76,7 @@ YCMD:test(playerid, params[], help)
 	return 1;
 }
 
-hook MyPagedDialog(playerid, additional_data, response, listitem, inputtext[])
+hook MyPagedDialog(playerid, response, additional_data, listitem, inputtext[])
 {
 	if(!response)
 		return 1;
