@@ -26,7 +26,7 @@ YCMD: test1(playerid, params[], help) // DIALOG_STYLE_LIST
 		SendClientMessage(pid, -1, "[DDP-inline] You selected listitem ID: {666666}%i{FFFFFF}, extra: {666666}%i{FFFFFF}, inputtext: {666666}%s", listitem, additional_data, inputtext);
 		return 1;
 	}
-	for(new i; i < MAX_DIALOG_ITEMS / 8; i++)
+	for (new i; i < MAX_DIALOG_ITEMS / 8; i++)
 	{
 		DynDialog_AddItem(playerid, i % 2, "{FFFFFF}List Item {FF00FF}%i", i);
 	}
