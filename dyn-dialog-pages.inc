@@ -11,7 +11,7 @@
 */
 
 /** API
-DynDialog_AddItem(playerid, const itemstring[], va_args<>);
+DynDialog_AddItem(playerid, additional_data, const itemstring[], va_args<>);
 DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const title[], const button1[], const button2[] = "", const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<");
 DynDialog_Clear(playerid);
 */
@@ -26,6 +26,7 @@ DynDialog_Clear(playerid);
 
 static stock Alloc: s_DialogItems[MAX_PLAYERS][MAX_DIALOG_ITEMS] = { { NO_ALLOC, ... }, ... };
 static stock s_ItemLength[MAX_PLAYERS][MAX_DIALOG_ITEMS]		 = { { 0, ... }, ... };
+static stock s_AdditionalItemData[MAX_PLAYERS][MAX_DIALOG_ITEMS] = { { 0, ... }, ... };
 static stock s_ItemCount[MAX_PLAYERS]							 = { 0, ... };
 static stock bool: s_Shown[MAX_PLAYERS]							 = { false, ... };
 
@@ -38,8 +39,9 @@ stock DynDialog_Clear(playerid)
 	for (new i = 0, count = s_ItemCount[playerid]; i < count; i++)
 	{
 		free(s_DialogItems[playerid][i]);
-		s_DialogItems[playerid][i] = NO_ALLOC;
-		s_ItemLength[playerid][i]  = 0;
+		s_DialogItems[playerid][i]		  = NO_ALLOC;
+		s_ItemLength[playerid][i]		  = 0;
+		s_AdditionalItemData[playerid][i] = 0;
 	}
 
 	s_ItemCount[playerid]		= 0;
@@ -49,18 +51,19 @@ stock DynDialog_Clear(playerid)
 	s_CurrentBackButtonIndex[0] = -1;
 }
 
-stock DynDialog_AddItem(playerid, const itemstring[], va_args<>)
+stock DynDialog_AddItem(playerid, additional_data, const itemstring[], va_args<>)
 {
 	if (s_Shown[playerid])
 		DynDialog_Clear(playerid);
 
 	new formatted_item[YSI_MAX_STRING];
-	va_format(formatted_item, sizeof(formatted_item), itemstring, va_start<2>);
+	va_format(formatted_item, sizeof(formatted_item), itemstring, va_start<3>);
 	strcat(formatted_item, "\n");
 
-	new allocIndex						= s_ItemCount[playerid]++;
-	s_DialogItems[playerid][allocIndex] = Malloc_NewS(formatted_item);
-	s_ItemLength[playerid][allocIndex]	= strlen(formatted_item);
+	new allocIndex							   = s_ItemCount[playerid]++;
+	s_DialogItems[playerid][allocIndex]		   = Malloc_NewS(formatted_item);
+	s_ItemLength[playerid][allocIndex]		   = strlen(formatted_item);
+	s_AdditionalItemData[playerid][allocIndex] = additional_data;
 }
 
 static stock DynDialog_CalculatePage(playerid, items_per_page, DIALOG_STYLE: style, const nextbutton[], const backbutton[])
@@ -133,7 +136,8 @@ stock DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const titl
 				DynDialog_CalculatePage(playerid, items_per_page, style, nextbutton, backbutton), button1, button2);
 			return 1;
 		}
-		CallLocalFunction(callback, "iiis", playerid, response, s_CurrentPage[playerid] * items_per_page + listitem, inputtext);
+		new item_absolute_index = s_CurrentPage[playerid] * items_per_page + listitem;
+		CallLocalFunction(callback, "iiiis", playerid, response, s_AdditionalItemData[playerid][item_absolute_index], item_absolute_index, inputtext);
 		DynDialog_Clear(playerid);
 		return 1;
 	}
