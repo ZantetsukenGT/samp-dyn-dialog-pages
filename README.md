@@ -27,7 +27,7 @@ DynDialog_Clear(playerid);
 ```
 Shows the dialog
 ```pawn
-DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const title[], const button1[], const button2[] = "", const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<");
+DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const title[], const button1[], const button2[] = "", const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<");
 ```
 
 ## How to Use
@@ -39,7 +39,7 @@ To add items to a paged dialog, use the function "```DynDialog_AddItem```".
 
 To show the paged dialog, use function "```DynDialog_Show```".
 * ```playerid``` - The player you want to show the dialog.
-* ```callback[]``` - A public or hook function which will be called when one of your items is picked.
+* ```Func: callback<iiiis>``` - A public or hook function or even an inline function which will be called when one of your items is picked.
 * ```style``` - The style of the dialog.
 * ```title[]``` - The title of the dialog.
 * ```button1[]``` - The first button of the dialog.
@@ -52,12 +52,12 @@ If you want to clear the ```Items Cache```, you can always use ```DynDialog_Clea
 
 To get the response of the Dialog, create a new callback by either forwarding or by hook:
 
-```hook Name_Of_The_Dialog(playerid, response, additional_data, listitem, inputtext[])```
+```hook Name_Of_The_Dialog(playerid, response, additional_data, listitem, string: inputtext[])```
 * ```playerid``` - The player who responded to the Dialog.
 * ```response``` - Did the player clicked Button1 or Button2.
 * ```additional_data``` - The arbitrary value you associated to this item.
 * ```listitem``` - The selected listitem of the dialog.
-* ```inputtext[]``` - The selected listitem's text as a string.
+* ```string: inputtext[]``` - The selected listitem's text as a string.
 
 ## Example
 ```pawn
@@ -66,22 +66,43 @@ To get the response of the Dialog, create a new callback by either forwarding or
 #include <YSI_Visual\y_commands>
 #include <YSI_Coding\y_hooks>
 
-YCMD:test(playerid, params[], help)
+hook MyPagedDialog(playerid, response, additional_data, listitem, string: inputtext[])
 {
-	for(new i; i < 250; i++)
-	{
-		DynDialog_AddItem(playerid, i % 2, "{FFFFFF}List Item {FF00FF}%i", i);
-	}
-	DynDialog_Show(playerid, "MyPagedDialog", DIALOG_STYLE_LIST, "{FFFFFF}Test Dialog Name {FF00FF}DialogName", "Button 1", "Button 2", 15);
-	return 1;
-}
-
-hook MyPagedDialog(playerid, response, additional_data, listitem, inputtext[])
-{
-	if(!response)
+	if (!response)
 		return 1;
 
 	va_SendClientMessage(playerid, -1, "[DDP] You selected listitem ID: {666666}%i{FFFFFF}, extra_data: {666666}%i{FFFFFF}, listitem's text: {666666}%s", listitem, additional_data, inputtext);
+	return 1;
+}
+
+YCMD:test1(playerid, params[], help)
+{
+	for (new i; i < 250; i++)
+	{
+		// in this example the 'additional_data' argument means whether the row's index is odd or even 
+		DynDialog_AddItem(playerid, i % 2, "{FFFFFF}List Item {FF00FF}%i", i);
+	}
+	DynDialog_Show(playerid, using public MyPagedDialog<iiiis>, DIALOG_STYLE_LIST, "{FFFFFF}Test Dialog Name {FF00FF}DialogName", "Button 1", "Button 2", 15);
+	return 1;
+}
+
+// or you can use an inline instead
+YCMD:test2(playerid, params[], help)
+{
+	inline const dialog_response(pid, response, additional_data, listitem, string: inputtext[])
+	{
+		if (!response)
+			return 1;
+
+		va_SendClientMessage(pid, -1, "[DDP-inline] You selected listitem ID: {666666}%i{FFFFFF}, extra_data: {666666}%i{FFFFFF}, listitem's text: {666666}%s", listitem, additional_data, inputtext);
+		return 1;
+	}
+	for(new i; i < 250; i++)
+	{
+		// in this example the 'additional_data' argument means whether the row's index is odd or even 
+		DynDialog_AddItem(playerid, i % 2, "{FFFFFF}List Item {FF00FF}%i", i);
+	}
+	DynDialog_Show(playerid, using inline dialog_response, DIALOG_STYLE_LIST, "{FFFFFF}Test2 Dialog Name {FF00FF}DialogName", "Button 1", "Button 2", 15);
 	return 1;
 }
 ```

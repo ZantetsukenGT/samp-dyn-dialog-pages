@@ -28,6 +28,7 @@ static stock Alloc: s_DialogItems[MAX_PLAYERS][MAX_DIALOG_ITEMS] = { { NO_ALLOC,
 static stock s_ItemLength[MAX_PLAYERS][MAX_DIALOG_ITEMS]		 = { { 0, ... }, ... };
 static stock s_AdditionalItemData[MAX_PLAYERS][MAX_DIALOG_ITEMS] = { { 0, ... }, ... };
 static stock s_ItemCount[MAX_PLAYERS]							 = { 0, ... };
+static stock Func: s_Callback<iiiis>[MAX_PLAYERS]				 = { F@_@iiiis: 0, ... };
 static stock bool: s_Shown[MAX_PLAYERS]							 = { false, ... };
 
 static stock s_CurrentPage[MAX_PLAYERS]							 = { 0, ... };
@@ -43,12 +44,16 @@ stock DynDialog_Clear(playerid)
 		s_ItemLength[playerid][i]		  = 0;
 		s_AdditionalItemData[playerid][i] = 0;
 	}
-
-	s_ItemCount[playerid]		= 0;
-	s_Shown[playerid]			= false;
-	s_CurrentPage[playerid]		= 0;
-	s_CurrentNextButtonIndex[0] = -1;
-	s_CurrentBackButtonIndex[0] = -1;
+	if (s_Callback[playerid])
+	{
+		Indirect_Release(s_Callback[playerid]);
+		s_Callback[playerid] = F@_@iiiis: 0;
+	}
+	s_ItemCount[playerid]			   = 0;
+	s_Shown[playerid]				   = false;
+	s_CurrentPage[playerid]			   = 0;
+	s_CurrentNextButtonIndex[playerid] = -1;
+	s_CurrentBackButtonIndex[playerid] = -1;
 }
 
 stock DynDialog_AddItem(playerid, additional_data, const itemstring[], va_args<>)
@@ -115,7 +120,7 @@ static stock DynDialog_CalculatePage(playerid, items_per_page, DIALOG_STYLE: sty
 	return dialog_info;
 }
 
-stock DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const title[], const button1[], const button2[] = "",
+stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const title[], const button1[], const button2[] = "",
 					 const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<")
 {
 	inline const dialog_response(response, listitem, string: inputtext[])
@@ -137,11 +142,19 @@ stock DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const titl
 			return 1;
 		}
 		new item_absolute_index = s_CurrentPage[playerid] * items_per_page + listitem;
-		CallLocalFunction(callback, "iiiis", playerid, response, s_AdditionalItemData[playerid][item_absolute_index], item_absolute_index, inputtext);
+		new F@_@iiiis: func		= s_Callback[playerid];
+		new bool: hasHeaders	= style == DIALOG_STYLE_TABLIST_HEADERS;
+		@.func(playerid, response, s_AdditionalItemData[playerid][hasHeaders ? item_absolute_index + 1 : item_absolute_index], item_absolute_index, inputtext);
 		DynDialog_Clear(playerid);
 		return 1;
 	}
 	s_Shown[playerid] = true;
+	if (s_Callback[playerid])
+	{
+		Indirect_Release(s_Callback[playerid]);
+	}
+	Indirect_Claim(callback);
+	s_Callback[playerid] = callback;
 	Dialog_ShowCallback(
 		playerid, using inline dialog_response, style, title,
 		DynDialog_CalculatePage(playerid, items_per_page, style, nextbutton, backbutton), button1, button2);
