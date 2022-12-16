@@ -82,4 +82,4 @@ hook MyPagedDialog(playerid, response, listitem, inputtext[])
 }
 ```
 
-[Example Script](https://github.com/ZantetsukenGT/samp-dyn-dialog-pages/blob/master/ddp-examples.pwn)
+[Example Script](https://github.com/ZantetsukenGT/samp-dyn-dialog-pages/blob/main/ddp-examples.pwn)
