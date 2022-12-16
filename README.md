@@ -33,13 +33,13 @@ DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const title[], c
 ## How to Use
 To add items to a paged dialog, use the function "```DynDialog_AddItem```".
 * ```playerid``` - The player you want to add items to the dialog.
-* ```additional_data``` - Associate an arbitrary value to an item, like a database id or weapon id
-* ```itemstring[]``` - The item as a string without ```\n```
-* ```va_args<>``` - Optional additional arguments to format the itemstring argument
+* ```additional_data``` - Associate an arbitrary value to an item, like a database id or weapon id.
+* ```itemstring[]``` - The item as a string without ```\n```.
+* ```va_args<>``` - Optional additional arguments to format the itemstring argument.
 
 To show the paged dialog, use function "```DynDialog_Show```".
 * ```playerid``` - The player you want to show the dialog.
-* ```callback[]``` - A public or hook function which will be called when one of your items is picked".
+* ```callback[]``` - A public or hook function which will be called when one of your items is picked.
 * ```style``` - The style of the dialog.
 * ```title[]``` - The title of the dialog.
 * ```button1[]``` - The first button of the dialog.
