@@ -145,7 +145,6 @@ stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const
 		new F@_@iiiis: func		= s_Callback[playerid];
 		new bool: hasHeaders	= style == DIALOG_STYLE_TABLIST_HEADERS;
 		@.func(playerid, response, s_AdditionalItemData[playerid][hasHeaders ? item_absolute_index + 1 : item_absolute_index], item_absolute_index, inputtext);
-		DynDialog_Clear(playerid);
 		return 1;
 	}
 	s_Shown[playerid] = true;
