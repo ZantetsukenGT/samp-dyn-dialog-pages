@@ -1,6 +1,6 @@
 {
 	"user": "ZantetsukenGT",
-	"repo": "Dynamic-Dialogs",
+	"repo": "samp-dyn-dialog-pages",
 	"tag": "1.0.0",
 	"entry": "ddp-examples.pwn",
 	"output": "gamemodes/ddp-examples.amx",

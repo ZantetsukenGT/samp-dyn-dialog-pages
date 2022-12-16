@@ -1,5 +1,7 @@
 # Dynamic Dialog Pages
+Yet another Dialog Pages Library, leverages y_malloc, y_dialog, y_inline and y_va.
 
+Heavily inspired by Nickk888SAMP's own library
 ## Installation
 
 Simply install to your project:
@@ -75,7 +77,7 @@ hook MyPagedDialog(playerid, response, listitem, inputtext[])
 	if(!response)
 		return 1;
 
-	va_SendClientMessage(playerid, -1, "[NDialog-Pages] You have selected listitem ID: {666666}%i{FFFFFF}, listitem's text: {666666}%s", listitem, inputtext);
+	va_SendClientMessage(playerid, -1, "[Dynamic-Dialog-Pages] You have selected listitem ID: {666666}%i{FFFFFF}, listitem's text: {666666}%s", listitem, inputtext);
 	return 1;
 }
 ```
