@@ -21,7 +21,7 @@ Adds an item to the dialog.
 ```pawn
 DynDialog_AddItem(playerid, additional_data, const itemstring[], va_args<>);
 ```
-Resets the lister for the dialog.
+Clears the contents for the dialog.
 ```pawn
 DynDialog_Clear(playerid);
 ```
@@ -48,9 +48,9 @@ To show the paged dialog, use function "```DynDialog_Show```".
 * ```nextbutton[]``` - The "Next" button string. (Optional)
 * ```backbutton[]``` - The "Back" button string. (Optional)
 
-If you want to clear the ```Items Cache```, you can always use ```DynDialog_Clear(playerid)```, it's optional because it's always cleared when the first item has been added after a paged dialog has been showed to the player.
+If you want to clear the ```Items Cache```, you can always use ```DynDialog_Clear(playerid)```, it's optional because it's always cleared when the first item has been added after a paged dialog has been shown to the player.
 
-To get the response of the Dialog, create a new callback by either forwarding or by hook
+To get the response of the Dialog, create a new callback by either forwarding or by hook:
 
 ```hook Name_Of_The_Dialog(playerid, response, additional_data, listitem, inputtext[])```
 * ```playerid``` - The player who responded to the Dialog.
