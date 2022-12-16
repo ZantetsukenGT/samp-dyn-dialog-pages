@@ -97,7 +97,7 @@ YCMD:test2(playerid, params[], help)
 		va_SendClientMessage(pid, -1, "[DDP-inline] You selected listitem ID: {666666}%i{FFFFFF}, extra_data: {666666}%i{FFFFFF}, listitem's text: {666666}%s", listitem, additional_data, inputtext);
 		return 1;
 	}
-	for(new i; i < 250; i++)
+	for (new i; i < 250; i++)
 	{
 		// in this example the 'additional_data' argument means whether the row's index is odd or even 
 		DynDialog_AddItem(playerid, i % 2, "{FFFFFF}List Item {FF00FF}%i", i);
