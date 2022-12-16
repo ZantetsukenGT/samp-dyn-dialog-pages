@@ -63,7 +63,7 @@ stock DynDialog_AddItem(playerid, const itemstring[], va_args<>)
 	s_ItemLength[playerid][allocIndex]	= strlen(formatted_item);
 }
 
-static DynDialog_CalculatePage(playerid, items_per_page, DIALOG_STYLE: style, const nextbutton[], const backbutton[])
+static stock DynDialog_CalculatePage(playerid, items_per_page, DIALOG_STYLE: style, const nextbutton[], const backbutton[])
 {
 	new dialog_info[4096 + 1], item[YSI_MAX_STRING];
 	new bool: hasHeaders	  = style == DIALOG_STYLE_TABLIST_HEADERS;
