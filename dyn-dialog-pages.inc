@@ -166,6 +166,22 @@ stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const
 	return 1;
 }
 
+#if defined HidePlayerDialog
+hook native HidePlayerDialog(playerid)
+{
+	if (s_Shown[playerid])
+		DynDialog_Clear(playerid);
+	return continue(playerid);
+}
+#endif
+
+hook native ShowPlayerDialog(playerid, dialogid, style, const caption[], const info[], const button1[], const button2[])
+{
+	if (s_Shown[playerid] && dialogid == -1)
+		DynDialog_Clear(playerid);
+	return continue(playerid, dialogid, style, caption, info, button1, button2);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	if (s_Shown[playerid])
