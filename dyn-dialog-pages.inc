@@ -16,6 +16,10 @@ DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const title[], c
 DynDialog_Clear(playerid);
 */
 
+#if !defined MAX_PLAYERS
+	#warning it is recommended that you define `MAX_PLAYERS` before the `dyn-dialog-pages` include or any `YSI` include for a potentially smaller gamemode size.
+#endif
+
 #include <a_samp>
 #include <YSI_Visual\y_dialog>
 #include <YSI_Coding\y_hooks>
