@@ -13,7 +13,7 @@
 /** API
 DynDialog_AddItem(playerid, additional_data, const itemstring[], va_args<>);
 DynDialog_Show(playerid, const callback[], DIALOG_STYLE: style, const title[], const button1[], const button2[] = "", const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<");
-DynDialog_Clear(playerid);
+DynDialog_Destroy(playerid);
 */
 
 #if !defined MAX_PLAYERS
@@ -36,15 +36,15 @@ DynDialog_Clear(playerid);
 static stock Alloc: s_DialogItems[MAX_PLAYERS][MAX_DIALOG_ITEMS] = { { NO_ALLOC, ... }, ... };
 static stock s_ItemLength[MAX_PLAYERS][MAX_DIALOG_ITEMS]		 = { { 0, ... }, ... };
 static stock s_AdditionalItemData[MAX_PLAYERS][MAX_DIALOG_ITEMS] = { { 0, ... }, ... };
-static stock s_ItemCount[MAX_PLAYERS]							 = { 0, ... };
-static stock Func: s_Callback<iiiis>[MAX_PLAYERS]				 = { DYNDIALOG_NO_CB, ... };
-static stock bool: s_Shown[MAX_PLAYERS]							 = { false, ... };
 
+static stock bool: s_Shown[MAX_PLAYERS]							 = { false, ... };
+static stock Func: s_Callback<iiiis>[MAX_PLAYERS]				 = { DYNDIALOG_NO_CB, ... };
+static stock s_ItemCount[MAX_PLAYERS]							 = { 0, ... };
 static stock s_CurrentPage[MAX_PLAYERS]							 = { 0, ... };
 static stock s_CurrentNextButtonIndex[MAX_PLAYERS]				 = { -1, ... };
 static stock s_CurrentBackButtonIndex[MAX_PLAYERS]				 = { -1, ... };
 
-stock DynDialog_Clear(playerid)
+static DynDialog_ResetInternal(playerid)
 {
 	for (new i = 0, count = s_ItemCount[playerid]; i < count; i++)
 	{
@@ -53,11 +53,6 @@ stock DynDialog_Clear(playerid)
 		s_ItemLength[playerid][i]		  = 0;
 		s_AdditionalItemData[playerid][i] = 0;
 	}
-	if (s_Callback[playerid])
-	{
-		Indirect_Release(s_Callback[playerid]);
-		s_Callback[playerid] = DYNDIALOG_NO_CB;
-	}
 	s_ItemCount[playerid]			   = 0;
 	s_Shown[playerid]				   = false;
 	s_CurrentPage[playerid]			   = 0;
@@ -65,10 +60,30 @@ stock DynDialog_Clear(playerid)
 	s_CurrentBackButtonIndex[playerid] = -1;
 }
 
+static DynDialog_ResetAllInternal(playerid)
+{
+	DynDialog_ResetInternal(playerid);
+	if (s_Callback[playerid])
+	{
+		Indirect_Release(s_Callback[playerid]);
+		s_Callback[playerid] = DYNDIALOG_NO_CB;
+	}
+}
+
+stock DynDialog_Destroy(playerid)
+{
+	if (s_Shown[playerid])
+#if defined HidePlayerDialog
+		HidePlayerDialog(playerid);
+#else
+		ShowPlayerDialog(playerid, -1, 0, #, #, #, #);
+#endif
+}
+
 stock DynDialog_AddItem(playerid, additional_data, const itemstring[], va_args<>)
 {
 	if (s_Shown[playerid])
-		DynDialog_Clear(playerid);
+		DynDialog_Destroy(playerid);
 
 	new formatted_item[YSI_MAX_STRING];
 	va_format(formatted_item, sizeof(formatted_item), itemstring, va_start<3>);
@@ -132,7 +147,7 @@ stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const
 					 const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<")
 {
 	new bool: style_has_headers = style == DIALOG_STYLE_TABLIST_HEADERS;
-	if (s_ItemCount[playerid] - _: style_has_headers < 1)
+	if (s_Shown[playerid] || s_ItemCount[playerid] - _: style_has_headers < 1)
 		return 0;
 	inline const dialog_response(response, listitem, string: inputtext[])
 	{
@@ -156,19 +171,19 @@ stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const
 		new additional_data		= s_AdditionalItemData[playerid] [item_absolute_index + _:style_has_headers];
 
 		new Func: func<iiiis>	= s_Callback[playerid];
+		s_Callback[playerid]	= DYNDIALOG_NO_CB;
+		DynDialog_ResetInternal(playerid);
 		@.func(playerid, response, additional_data, item_absolute_index, inputtext);
+		Indirect_Release(func);
 		return 1;
-	}
-	s_Shown[playerid] = true;
-	if (s_Callback[playerid])
-	{
-		Indirect_Release(s_Callback[playerid]);
 	}
 	Indirect_Claim(callback);
 	s_Callback[playerid] = callback;
+
 	Dialog_ShowCallback(
 		playerid, using inline dialog_response, style, title,
 		DynDialog_CalculatePage(playerid, items_per_page, style_has_headers, nextbutton, backbutton), button1, button2);
+	s_Shown[playerid] = true;
 	return 1;
 }
 
@@ -176,28 +191,28 @@ stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const
 hook native HidePlayerDialog(playerid)
 {
 	if (s_Shown[playerid])
-		DynDialog_Clear(playerid);
+		DynDialog_ResetAllInternal(playerid);
 	return continue(playerid);
 }
 #endif
 
 hook native ShowPlayerDialog(playerid, dialogid, style, const caption[], const info[], const button1[], const button2[])
 {
-	if (s_Shown[playerid] && dialogid == -1)
-		DynDialog_Clear(playerid);
+	if (s_Shown[playerid])
+		DynDialog_ResetAllInternal(playerid);
 	return continue(playerid, dialogid, style, caption, info, button1, button2);
 }
 
 hook OnPlayerConnect(playerid)
 {
 	if (s_Shown[playerid])
-		DynDialog_Clear(playerid);
+		DynDialog_ResetAllInternal(playerid);
 	return 1;
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
 	if (s_Shown[playerid])
-		DynDialog_Clear(playerid);
+		DynDialog_ResetAllInternal(playerid);
 	return 1;
 }
