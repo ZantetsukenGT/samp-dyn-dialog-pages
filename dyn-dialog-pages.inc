@@ -132,7 +132,7 @@ stock DynDialog_Show(playerid, Func: callback<iiiis>, DIALOG_STYLE: style, const
 					 const items_per_page, const nextbutton[] = "{FF0000}>>>", const backbutton[] = "{FF0000}<<<")
 {
 	new bool: style_has_headers = style == DIALOG_STYLE_TABLIST_HEADERS;
-	if (s_ItemCount[playerid] - _ : style_has_headers < 1)
+	if (s_ItemCount[playerid] - _: style_has_headers < 1)
 		return 0;
 	inline const dialog_response(response, listitem, string: inputtext[])
 	{
