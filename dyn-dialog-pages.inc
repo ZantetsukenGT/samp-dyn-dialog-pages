@@ -106,7 +106,7 @@ stock DynDialog_AddItem(playerid, item_value, const itemstring[], va_args<>)
 	va_format(formatted_item, sizeof(formatted_item), itemstring, va_start<3>);
 	strcat(formatted_item, "\n");
 
-	s_DialogItems[allocIndex] = Malloc_NewS(formatted_item);
+	s_DialogItems[allocIndex] = Malloc_NewS(formatted_item, true);
 	if (!s_DialogItems[allocIndex])
 	{
 		Iter_Remove(s_ItemOwnerships<playerid>, allocIndex);
@@ -127,7 +127,7 @@ static stock DynDialog_CalculatePage(playerid, E_PAGE_DIRECTION: direction, item
 	new itemIndex			  = Iter_First(s_ItemOwnerships<playerid>);
 	if (style_has_headers)
 	{
-		Malloc_GetS(item, sizeof(item), s_DialogItems[itemIndex], 0);
+		Malloc_GetS(item, sizeof(item), s_DialogItems[itemIndex], 0, true);
 		strins(dialog_info, item, currentLength);
 		currentLength += s_ItemLength { itemIndex };
 		itemIndex = Iter_Next(s_ItemOwnerships<playerid>, itemIndex);
@@ -151,7 +151,7 @@ static stock DynDialog_CalculatePage(playerid, E_PAGE_DIRECTION: direction, item
 	s_CurrentPageFirstItemIndex[playerid] = itemIndex;
 	for (new i = 0; i < items_on_page; i++)
 	{
-		Malloc_GetS(item, sizeof(item), s_DialogItems[itemIndex], 0);
+		Malloc_GetS(item, sizeof(item), s_DialogItems[itemIndex], 0, true);
 		strins(dialog_info, item, currentLength);
 		currentLength += s_ItemLength { itemIndex };
 		itemIndex = Iter_Next(s_ItemOwnerships<playerid>, itemIndex);
