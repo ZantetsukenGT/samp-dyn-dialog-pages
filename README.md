@@ -73,7 +73,7 @@ stock MyModule_ShowMyDynamicDialog(playerid)
 * `item_value` - The arbitrary value you associated to this item.
 * `string: inputtext[]` - The selected listitem's text as a string.
 
-## Small Example, if you look for a bigger example script, look [here](https://github.com/ZantetsukenGT/samp-dyn-dialog-pages/blob/main/ddp-examples.pwn)
+## Small Example, if you're looking for a bigger example script, look [here](https://github.com/ZantetsukenGT/samp-dyn-dialog-pages/blob/main/ddp-examples.pwn)
 ```pawn
 #include <a_samp>
 #define YSI_YES_HEAP_MALLOC
