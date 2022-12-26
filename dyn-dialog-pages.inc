@@ -54,7 +54,7 @@ static stock s_CurrentPageFirstItemIndex[MAX_PLAYERS]	= { cellmin, ... }; // abs
 static stock s_CurrentNextButtonIndex[MAX_PLAYERS char] = { -1, ... };		// response's listitem index
 static stock s_CurrentBackButtonIndex[MAX_PLAYERS char] = { -1, ... };		// response's listitem index
 
-static DynDialog_ResetInternal(playerid)
+static stock DynDialog_ResetInternal(playerid)
 {
 	foreach (new i : s_ItemOwnerships<playerid>)
 	{
@@ -72,7 +72,7 @@ static DynDialog_ResetInternal(playerid)
 	s_CurrentBackButtonIndex { playerid } = -1;
 }
 
-static DynDialog_ResetAllInternal(playerid)
+static stock DynDialog_ResetAllInternal(playerid)
 {
 	DynDialog_ResetInternal(playerid);
 	if (s_Callback[playerid])
