@@ -34,6 +34,10 @@ DynDialog_Destroy(playerid);
 #endif
 #define DYNDIALOG_NO_CB (Func: 0<iiis>)
 
+#if !defined DIALOG_STYLE
+	#define DIALOG_STYLE: _:
+#endif
+
 static enum E_PAGE_DIRECTION {
 	PREVIOUS,
 	STAY,
@@ -88,7 +92,7 @@ stock DynDialog_Destroy(playerid)
 #if defined HidePlayerDialog
 		return HidePlayerDialog(playerid);
 #else
-		return ShowPlayerDialog(playerid, -1, 0, #, #, #, #);
+		return ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, #, #, #, #);
 #endif
 	return 0;
 }
@@ -244,11 +248,10 @@ hook native HidePlayerDialog(playerid)
 }
 #endif
 
-hook native ShowPlayerDialog(playerid, dialogid, style, const caption[], const info[], const button1[], const button2[])
-{
+hook native ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE: style, const title[], const body[], const button1[], const button2[]){
 	if (s_Shown { playerid })
 		DynDialog_ResetAllInternal(playerid);
-	return continue(playerid, dialogid, style, caption, info, button1, button2);
+	return continue(playerid, dialogid, style, title, body, button1, button2);
 }
 
 hook OnPlayerConnect(playerid)
