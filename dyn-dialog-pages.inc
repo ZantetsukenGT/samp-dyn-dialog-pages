@@ -20,7 +20,7 @@ DynDialog_Destroy(playerid);
 	#warning it is recommended that you define `MAX_PLAYERS` before the `dyn-dialog-pages` include or any `YSI` include for a potentially smaller gamemode size.
 #endif
 
-#include <a_samp>
+#include <open.mp>
 #include <YSI_Visual\y_dialog>
 #include <YSI_Data\y_iterate>
 #include <YSI_Coding\y_hooks>

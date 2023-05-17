@@ -8,7 +8,9 @@
 		"ZantetsukenGT"
 	],
 	"dependencies": [
-		"pawn-lang/samp-stdlib",
+		"openmultiplayer/omp-stdlib",
+		"pawn-lang/samp-stdlib@open.mp",
+		"pawn-lang/pawn-stdlib@open.mp",
 		"pawn-lang/YSI-Includes@5.x"
 	],
 	"runtime":
