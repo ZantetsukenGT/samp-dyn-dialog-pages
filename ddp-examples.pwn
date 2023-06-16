@@ -1,5 +1,5 @@
 #define MAX_PLAYERS 50
-#include <open.mp>
+#include <a_samp>
 
 //#define MALLOC_MEMORY (3276800)
 #define YSI_YES_HEAP_MALLOC
